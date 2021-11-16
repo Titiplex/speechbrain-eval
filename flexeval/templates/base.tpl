@@ -102,7 +102,7 @@ Powered by <a href="https://gitlab.inria.fr/expression/tools/FlexEval">FlexEval<
                   {% if module_class == "AdminModule" %}
                      <a href="{{make_url('/')}}"> Leave Admin panel.</a>
                   {% else %}
-                    <a href="{{make_url('/admin')}}"> Access Admin  panel.</a>
+                    <a href="{{make_url('/admin/')}}"> Access Admin  panel.</a>
                   {% endif %}
                 </p>
               {%endblock%}
