@@ -8,7 +8,14 @@ You can find the procedure to install it here: https://docs.python.org/fr/3.6/in
 
 ```
 pip3 install -r requirements.txt
+pip3 install -U cachelib
 ```
+You have to replace the line 313 where you have "flask.cache import FileSystemCache" by "from cachelib import FileSystemCache"
+
+```
+vi absolute_path/flexEval/lib/python3.6/site-packages/flask_session/sessions.py
+```
+
 
 # Launching the webserver
 
