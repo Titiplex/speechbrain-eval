@@ -1,0 +1,41 @@
+{
+  "test_ab": {
+    "system_all_aligned": true,
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "system10.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "system20.csv"
+      }
+    ]
+  },
+  "test_mos": {
+    "system_all_aligned": true,
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "system10.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "system20.csv"
+      }
+    ]
+  },
+  "test_abx": {
+    "system_all_aligned": true,
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "system10.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "system20.csv"
+      }
+    ]
+  }
+}

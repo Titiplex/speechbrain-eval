@@ -1,0 +1,111 @@
+{
+  "gdpr_compliance": "relax",
+  "entrypoint": "accueil",
+  "variables": {
+    "title": "Speechbrain",
+    "authors": "Cédric Fayet, Titiplex"
+  },
+  "admin": {
+    "entrypoint": {
+      "mod": "admin_panel",
+      "password": "bflzefinlh67s",
+      "variables": {
+        "subtitle": "Admin Panel"
+      }
+    },
+    "mods": [
+      {
+        "mod": "export_bdd",
+        "variables": {
+          "subtitle": "Download BDD",
+          "subdescription": "Download the database in CSV or SQLite format."
+        }
+      },
+      {
+        "mod": "stats",
+        "variables": {
+          "subtitle": "Résultats",
+          "subdescription": "Statistiques des évaluations perceptives."
+        },
+        "reports": {
+          "integration": {
+            "title": "Qualité de l’intégration",
+            "template": "integration.tpl",
+            "sources": {
+              "method_a": {
+                "table": "TestSample_test_mos",
+                "column": "MOS_score_sys1",
+                "exclude_intro": true
+              },
+              "method_b": {
+                "table": "TestSample_test_mos",
+                "column": "MOS_score_sys2",
+                "exclude_intro": true
+              }
+            }
+          },
+          "naturalness": {
+            "title": "La qualité au naturel",
+            "template": "naturalness.tpl",
+            "sources": {
+              "method_a": {
+                "table": "TestSample_test_mos",
+                "column": "MOS_score_sys1",
+                "exclude_intro": true
+              },
+              "method_b": {
+                "table": "TestSample_test_mos",
+                "column": "MOS_score_sys2",
+                "exclude_intro": true
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "stages": {
+    "accueil": {
+      "type": "page:user",
+      "template": "welcome.tpl",
+      "next": "test_ab"
+    },
+    "test_ab": {
+      "type": "test",
+      "template": "ab.tpl",
+      "next": "test_mos",
+      "nb_steps": 1,
+      "nb_step_intro": 0,
+      "transaction_timeout_seconds": 600,
+      "variables": {
+        "subtitle": "Test AB"
+      }
+    },
+    "test_mos": {
+      "type": "test",
+      "template": "mos.tpl",
+      "next": "test_abx",
+      "nb_steps": 1,
+      "nb_step_intro": 0,
+      "transaction_timeout_seconds": 600,
+      "variables": {
+        "subtitle": "Test MOS"
+      }
+    },
+    "test_abx": {
+      "type": "test",
+      "template": "abx.tpl",
+      "next": "fin_du_test",
+      "nb_steps": 1,
+      "nb_step_intro": 0,
+      "transaction_timeout_seconds": 600,
+      "variables": {
+        "subtitle": "Test ABX"
+      }
+    },
+    "fin_du_test": {
+      "type": "page:user",
+      "template": "end.tpl"
+    }
+  }
+}
