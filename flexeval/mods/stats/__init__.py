@@ -28,11 +28,33 @@ with AdminModule(__name__) as am:
     @am.connection_required
     def index():
         reports = am.get_config().get("reports", {})
+        report_id = request.args.get("report")
 
-        report_id = request.args.get(
-            "report",
-            next(iter(reports), None),
+        menu_url = am.url_for(
+            am.get_endpoint_for_local_rule("/")
         )
+
+        navigation = [
+            {
+                "id": key,
+                "title": report["title"],
+                "description": report.get(
+                    "description",
+                    "See Results for this test"
+                ),
+                "url": am.url_for(
+                    am.get_endpoint_for_local_rule("/"),
+                    report=key,
+                ),
+            }
+            for key, report in reports.items()
+        ]
+
+        if report_id is None:
+            return am.render_template(
+                "index.tpl",
+                navigation=navigation,
+            )
 
         if report_id not in reports:
             abort(404)
@@ -44,15 +66,11 @@ with AdminModule(__name__) as am:
             for source_id, source in report["sources"].items()
         }
 
-        navigation = [
-            {"id": key, "title": value["title"]}
-            for key, value in reports.items()
-        ]
-
         return am.render_template(
             report["template"],
             report_title=report["title"],
             report_id=report_id,
+            menu_url=menu_url,
             navigation=navigation,
             results=results,
         )

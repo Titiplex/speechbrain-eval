@@ -1,10 +1,6 @@
-<nav aria-label="Rapports statistiques">
-    {% for page in get_variable("navigation") %}
-    <a href="?report={{ page.id }}"
-            {% if page.id == get_variable("report_id") %}
-       aria-current="page"
-            {% endif %}>
-        {{ page.title }}
+<nav aria-label="Navigation des statistiques" class="mb-4">
+    <a href="{{ get_variable('menu_url') }}"
+       class="btn btn-outline-primary">
+        All reports
     </a>
-    {% endfor %}
 </nav>
