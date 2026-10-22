@@ -1,20 +1,18 @@
 # coding: utf8
 # license : CeCILL-C
 
+import datetime
 import os
 import random
 import string
-import datetime
 
-from flask import Flask, current_app, g
+from flask import Flask
 
-import sqlalchemy
-
-from .utils import safe_copy_rep,safe_make_rep, del_file, create_file
 from .core import Config, Provider, ErrorHandler
 from .core.providers import assets, templates
+from .extensions import db, session_manager
+from .utils import safe_copy_rep, safe_make_rep, del_file, create_file
 
-from .extensions import db,session_manager
 
 def create_app(INSTANCE_PATH,INSTANCE_URL):
     """Application-factory pattern"""
