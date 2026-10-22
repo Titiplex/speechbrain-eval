@@ -1,5 +1,7 @@
 # FlexEval #
 
+<span style="color: red; font-size: 34px">WARNING : this is a fork from <a href="https://gitlab.inria.fr/expression/tools/FlexEval">INRIA's FlexEval</a></span>
+
 FlexEval is a software that aim to help you create a web-based evaluation platform.
 
 # How to install
