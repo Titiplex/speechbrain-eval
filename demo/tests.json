@@ -37,5 +37,70 @@
         "data": "system20.csv"
       }
     ]
+  },
+  "entrainement_ab": {
+    "system_all_aligned": true,
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "training_sys1.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "training_sys2.csv"
+      }
+    ]
+  },
+  "entrainement_mos": {
+    "system_all_aligned": true,
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "training_sys1.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "training_sys2.csv"
+      }
+    ]
+  },
+  "entrainement_abx": {
+    "system_all_aligned": true,
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "training_sys1.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "training_sys2.csv"
+      }
+    ]
+  },
+  "controle_ab": {
+    "system_all_aligned": true,
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "controle_ab_sys1.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "controle_ab_sys2.csv"
+      }
+    ]
+  },
+  "controle_mos": {
+    "system_all_aligned": true,
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "controle_mos_sys1.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "controle_mos_sys2.csv"
+      }
+    ]
   }
 }

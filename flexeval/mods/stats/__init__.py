@@ -1,25 +1,42 @@
 from flask import abort, request
-from sqlalchemy import MetaData, Table
+from sqlalchemy import MetaData, Table, inspect
 
 from flexeval.core import AdminModule
 from flexeval.database import db
 
-from .src.statistics import numeric_summary
+from .src.statistics import numeric_summary, control_summary
 
 
 def summarize_source(source):
-    table = Table(
-        source["table"],
-        MetaData(),
-        autoload_with=db.engine,
-    )
+    # Native test tables/columns may not exist before the first response.
+    empty = {"participants": {}} if source.get("type") == "control" else numeric_summary([])
 
-    query = db.session.query(table.c[source["column"]])
+    if source["table"] not in inspect(db.engine).get_table_names():
+        return dict(empty, message="No answer registered for this test.")
+
+    table = Table(source["table"], MetaData(), autoload_with=db.engine)
+    required = list(source["expected"]) if source.get("type") == "control" else [source["column"]]
+
+    if source.get("type") == "control":
+        required.append("user_pseudo")
+
+    missing = [name for name in required if name not in table.c]
+
+    if missing:
+        return dict(empty, message="Missing columns : " + ", ".join(missing))
+
+    query = db.session.query(table)
 
     if source.get("exclude_intro", True):
         query = query.filter(table.c["intro"].is_(False))
 
-    return numeric_summary([row[0] for row in query.all()])
+    rows = [dict(zip(table.c.keys(), row)) for row in query.all()]
+
+    if source.get("type") == "control":
+        return control_summary(rows, source["expected"])
+
+    return numeric_summary([row[source["column"]] for row in rows])
+
 
 
 with AdminModule(__name__) as am:

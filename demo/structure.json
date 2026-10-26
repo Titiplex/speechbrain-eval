@@ -59,6 +59,30 @@
                 "exclude_intro": true
               }
             }
+          },
+          "controles": {
+            "title": "Contrôles d’attention",
+            "description": "Réponses aux consignes, séparées des résultats principaux.",
+            "template": "controls.tpl",
+            "sources": {
+              "Consigne A/B": {
+                "type": "control",
+                "table": "TestSample_controle_ab",
+                "exclude_intro": false,
+                "expected": {
+                  "ChoiceBetween_sys1_sys2": "sys1"
+                }
+              },
+              "Consigne MOS": {
+                "type": "control",
+                "table": "TestSample_controle_mos",
+                "exclude_intro": false,
+                "expected": {
+                  "MOS_score_sys1": "2",
+                  "MOS_score_sys2": "2"
+                }
+              }
+            }
           }
         }
       }
@@ -68,12 +92,12 @@
     "accueil": {
       "type": "page:user",
       "template": "welcome.tpl",
-      "next": "test_ab"
+      "next": "entrainement_ab"
     },
     "test_ab": {
       "type": "test",
       "template": "ab.tpl",
-      "next": "test_mos",
+      "next": "controle_ab",
       "nb_steps": 1,
       "nb_step_intro": 0,
       "transaction_timeout_seconds": 600,
@@ -84,7 +108,7 @@
     "test_mos": {
       "type": "test",
       "template": "mos.tpl",
-      "next": "test_abx",
+      "next": "controle_mos",
       "nb_steps": 1,
       "nb_step_intro": 0,
       "transaction_timeout_seconds": 600,
@@ -106,6 +130,56 @@
     "fin_du_test": {
       "type": "page:user",
       "template": "end.tpl"
+    },
+    "entrainement_ab": {
+      "type": "test",
+      "template": "ab.tpl",
+      "nb_steps": 1,
+      "nb_step_intro": 1,
+      "next": "test_ab",
+      "variables": {
+        "subtitle": "Entraînement AB"
+      }
+    },
+    "entrainement_mos": {
+      "type": "test",
+      "template": "mos.tpl",
+      "nb_steps": 1,
+      "nb_step_intro": 1,
+      "next": "test_mos",
+      "variables": {
+        "subtitle": "Entraînement MOS"
+      }
+    },
+    "entrainement_abx": {
+      "type": "test",
+      "template": "abx.tpl",
+      "nb_steps": 1,
+      "nb_step_intro": 1,
+      "next": "test_abx",
+      "variables": {
+        "subtitle": "Entraînement ABX"
+      }
+    },
+    "controle_ab": {
+      "type": "test",
+      "template": "controle_ab.tpl",
+      "nb_steps": 1,
+      "nb_step_intro": 0,
+      "next": "entrainement_mos",
+      "variables": {
+        "subtitle": "Vérification de la consigne"
+      }
+    },
+    "controle_mos": {
+      "type": "test",
+      "template": "controle_mos.tpl",
+      "nb_steps": 1,
+      "nb_step_intro": 0,
+      "next": "entrainement_abx",
+      "variables": {
+        "subtitle": "Vérification de la consigne"
+      }
     }
   }
 }
