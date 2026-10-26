@@ -30,33 +30,19 @@
         "reports": {
           "integration": {
             "title": "Qualité de l’intégration",
-            "template": "integration.tpl",
+            "template": "results.tpl",
             "sources": {
-              "method_a": {
-                "table": "TestSample_test_mos",
+              "sys1": {
+                "table": "TestSample_evaluation_mos",
                 "column": "MOS_score_sys1",
-                "exclude_intro": true
+                "compare": [
+                  "MOS_score_sys1",
+                  "MOS_score_sys2"
+                ]
               },
-              "method_b": {
-                "table": "TestSample_test_mos",
-                "column": "MOS_score_sys2",
-                "exclude_intro": true
-              }
-            }
-          },
-          "naturalness": {
-            "title": "La qualité au naturel",
-            "template": "naturalness.tpl",
-            "sources": {
-              "method_a": {
-                "table": "TestSample_test_mos",
-                "column": "MOS_score_sys1",
-                "exclude_intro": true
-              },
-              "method_b": {
-                "table": "TestSample_test_mos",
-                "column": "MOS_score_sys2",
-                "exclude_intro": true
+              "sys2": {
+                "table": "TestSample_evaluation_mos",
+                "column": "MOS_score_sys2"
               }
             }
           },
@@ -65,22 +51,122 @@
             "description": "Réponses aux consignes, séparées des résultats principaux.",
             "template": "controls.tpl",
             "sources": {
-              "Consigne A/B": {
+              "Compréhension": {
                 "type": "control",
-                "table": "TestSample_controle_ab",
+                "table": "Form_comprehension",
                 "exclude_intro": false,
                 "expected": {
-                  "ChoiceBetween_sys1_sys2": "sys1"
+                  "criterion": "raccord"
                 }
               },
-              "Consigne MOS": {
+              "AB": {
                 "type": "control",
-                "table": "TestSample_controle_mos",
+                "table": "TestSample_evaluation_ab",
                 "exclude_intro": false,
                 "expected": {
-                  "MOS_score_sys1": "2",
-                  "MOS_score_sys2": "2"
+                  "protocol_correct": "1"
+                },
+                "role": "control"
+              },
+              "MOS": {
+                "type": "control",
+                "table": "TestSample_evaluation_mos",
+                "exclude_intro": false,
+                "expected": {
+                  "protocol_correct": "1"
+                },
+                "role": "control"
+              },
+              "ABX": {
+                "type": "control",
+                "table": "TestSample_evaluation_abx",
+                "exclude_intro": false,
+                "expected": {
+                  "protocol_correct": "1"
+                },
+                "role": "control"
+              },
+              "Casque (optionnel)": {
+                "type": "control",
+                "table": "TestSample_headphones",
+                "exclude_intro": false,
+                "expected": {
+                  "protocol_correct": "1"
                 }
+              }
+            }
+          },
+          "preferences": {
+            "title": "Préférences A/B",
+            "template": "categories.tpl",
+            "sources": {
+              "Résultats": {
+                "type": "ab",
+                "table": "TestSample_evaluation_ab"
+              }
+            }
+          },
+          "identification": {
+            "title": "Identification ABX",
+            "template": "categories.tpl",
+            "sources": {
+              "Résultats": {
+                "type": "abx",
+                "table": "TestSample_evaluation_abx"
+              }
+            }
+          },
+          "qualite": {
+            "title": "Stabilité et positions",
+            "template": "quality.tpl",
+            "sources": {
+              "AB": {
+                "type": "quality",
+                "protocol": "ab",
+                "table": "TestSample_evaluation_ab",
+                "exclude_intro": false
+              },
+              "MOS": {
+                "type": "quality",
+                "protocol": "mos",
+                "table": "TestSample_evaluation_mos",
+                "exclude_intro": false
+              },
+              "ABX": {
+                "type": "quality",
+                "protocol": "abx",
+                "table": "TestSample_evaluation_abx",
+                "exclude_intro": false
+              }
+            }
+          },
+          "historique": {
+            "title": "Ancien MOS (historique)",
+            "template": "results.tpl",
+            "sources": {
+              "sys1": {
+                "table": "TestSample_test_mos",
+                "column": "MOS_score_sys1"
+              },
+              "sys2": {
+                "table": "TestSample_test_mos",
+                "column": "MOS_score_sys2"
+              }
+            }
+          },
+          "conditions": {
+            "title": "Conditions et compréhension",
+            "template": "profile.tpl",
+            "sources": {
+              "listening_conditions": {
+                "type": "profile",
+                "table": "Form_listening_conditions",
+                "exclude_intro": false
+              },
+              "comprehension": {
+                "type": "profile",
+                "table": "Form_comprehension",
+                "exclude_intro": false
               }
             }
           }
@@ -92,7 +178,7 @@
     "accueil": {
       "type": "page:user",
       "template": "welcome.tpl",
-      "next": "entrainement_ab"
+      "next": "listening_conditions"
     },
     "test_ab": {
       "type": "test",
@@ -179,6 +265,106 @@
       "next": "entrainement_abx",
       "variables": {
         "subtitle": "Vérification de la consigne"
+      }
+    },
+    "listening_conditions": {
+      "type": "form",
+      "template": "listening_conditions.tpl",
+      "next": "comprehension"
+    },
+    "comprehension": {
+      "type": "form",
+      "template": "comprehension.tpl",
+      "next": "formation_ab"
+    },
+    "formation_ab": {
+      "type": "test",
+      "template": "ab_experience.tpl",
+      "nb_steps": 5,
+      "nb_step_intro": 5,
+      "next": "evaluation_ab",
+      "variables": {
+        "subtitle": "Entraînement AB",
+        "question": "Dans quelle version le nom s’intègre-t-il le plus naturellement à la phrase ?"
+      }
+    },
+    "evaluation_ab": {
+      "type": "test",
+      "template": "ab_experience.tpl",
+      "nb_steps": 9,
+      "nb_step_intro": 0,
+      "next": "formation_mos",
+      "variables": {
+        "subtitle": "Évaluation AB",
+        "question": "Dans quelle version le nom s’intègre-t-il le plus naturellement à la phrase ?",
+        "allow_tie": true
+      }
+    },
+    "formation_mos": {
+      "type": "test",
+      "template": "mos_experience.tpl",
+      "nb_steps": 5,
+      "nb_step_intro": 5,
+      "next": "evaluation_mos",
+      "variables": {
+        "subtitle": "Entraînement MOS",
+        "question": "À quel point le nom s’intègre-t-il naturellement au reste de la phrase ?",
+        "label_1": "Très mal",
+        "label_2": "Mal",
+        "label_3": "Moyennement",
+        "label_4": "Bien",
+        "label_5": "Très bien"
+      }
+    },
+    "evaluation_mos": {
+      "type": "test",
+      "template": "mos_experience.tpl",
+      "nb_steps": 9,
+      "nb_step_intro": 0,
+      "next": "formation_abx",
+      "variables": {
+        "subtitle": "Évaluation MOS",
+        "question": "À quel point le nom s’intègre-t-il naturellement au reste de la phrase ?",
+        "allow_tie": false,
+        "label_1": "Très mal",
+        "label_2": "Mal",
+        "label_3": "Moyennement",
+        "label_4": "Bien",
+        "label_5": "Très bien"
+      }
+    },
+    "formation_abx": {
+      "type": "test",
+      "template": "abx_experience.tpl",
+      "nb_steps": 5,
+      "nb_step_intro": 5,
+      "next": "evaluation_abx",
+      "variables": {
+        "subtitle": "Entraînement ABX",
+        "question": "X correspond-il à A ou à B ?"
+      }
+    },
+    "evaluation_abx": {
+      "type": "test",
+      "template": "abx_experience.tpl",
+      "nb_steps": 9,
+      "nb_step_intro": 0,
+      "next": "fin_du_test",
+      "variables": {
+        "subtitle": "Évaluation ABX",
+        "question": "X correspond-il à A ou à B ?",
+        "allow_tie": false
+      }
+    },
+    "headphones": {
+      "type": "test",
+      "template": "headphones.tpl",
+      "nb_steps": 6,
+      "nb_step_intro": 0,
+      "next": "comprehension",
+      "variables": {
+        "subtitle": "Vérification du casque",
+        "question": "Quel extrait est le moins fort ?"
       }
     }
   }

@@ -4,76 +4,80 @@
 
 {% if get_variable("intro_step",False) %}
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
-  <h4 class="alert-heading">This is the <strong>introduction</strong>.</h4>
-  <p>Your answers will <strong>not</strong> be recorded as correct answer.</p>
+    <h4 class="alert-heading">This is the <strong>introduction</strong>.</h4>
+    <p>Your answers will <strong>not</strong> be recorded as correct answer.</p>
 
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 {% endif %}
 
 {% if not(get_variable("intro_step",False)) and (get_variable("step") == 1) %}
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
     <h4 class="alert-heading">This is now the <strong>real</strong> test, not an introduction step.</h4>
 
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
+        <span aria-hidden="true">&times;</span>
     </button>
-  </div>
+</div>
 {% endif %}
 
 
-<h2 class="bd-content-title"> <img src="{{get_asset('/img/svg_icon/chevron-right.svg','flexeval')}}" alt=">" /> {{get_variable("subtitle","Test")}} - step {{get_variable("step")}} over {{get_variable("max_steps")}}</h2>
+<h2 class="bd-content-title"><img src="{{get_asset('/img/svg_icon/chevron-right.svg','flexeval')}}"
+                                  alt=">"/> {{get_variable("subtitle","Test")}} - step {{get_variable("step")}}
+    over {{get_variable("max_steps")}}</h2>
 
 <form action="./save" method="post" enctype="multipart/form-data" class="form-example">
 
-  <fieldset class="form-group">
-    <legend class="col-form-label"><strong>Question:</strong> How do you judge the <strong>quality</strong> of the following sample?</legend>
+    <fieldset class="form-group">
+        <legend class="col-form-label">
+            <strong>Question:</strong> {{ get_variable("question", default_value="How do you judge the quality of the following sample?") }
+            }
+        </legend>
 
 
+        {% for syssample in get_variable("syssamples") %}
+        <div class="form-group" style="margin-bottom:10px;">
+            {% set name_field = get_variable("field_name",name="MOS_score",syssamples=[syssample]) %}
+            {% set content,mimetype = syssample.get(num=0)  %}
 
-    {% for syssample in get_variable("syssamples") %}
-    <div class="form-group" style="margin-bottom:10px;">
-      {% set name_field = get_variable("field_name",name="MOS_score",syssamples=[syssample]) %}
-      {% set content,mimetype = syssample.get(num=0)  %}
+            <label for="score@{{syssample.ID}}">
 
-      <label for="score@{{syssample.ID}}">
+                {% if mimetype == "text" %}
+                {{content}}
+                {% elif mimetype == "image" %}
+                <img class="img-fluid" src="{{content}}"/>
+                {% elif mimetype == "audio" %}
+                <audio controls readall>
+                    <source src="{{content}}">
+                    Your browser does not support the <code>audio</code> element.
+                </audio>
+                {% elif mimetype == "video" %}
+                <video controls readall>
+                    <source src="{{content}}">
+                    Your browser does not support the <code>video</code> element.
+                </video>
+                {% else %}
+                {{content}}
+                {% endif %}
 
-        {% if mimetype == "text" %}
-          {{content}}
-        {% elif mimetype == "image" %}
-          <img class="img-fluid" src="{{content}}" />
-        {% elif mimetype == "audio" %}
-          <audio controls readall>
-            <source src="{{content}}">
-            Your browser does not support the <code>audio</code> element.
-          </audio>
-        {% elif mimetype == "video" %}
-          <video controls readall>
-            <source src="{{content}}">
-              Your browser does not support the <code>video</code> element.
-          </video>
-        {% else %}
-            {{content}}
-        {% endif %}
+            </label>
+            <select id="score@{{syssample.ID}}" name="{{ name_field }}" class="form-control" required>
+                <option value="" selected disabled hidden>Choose here</option>
+                <option value="5">{{ get_variable("label_5", default_value="Excellent") }}</option>
+                <option value="4">{{ get_variable("label_4", default_value="Good") }}</option>
+                <option value="3">{{ get_variable("label_3", default_value="Fair") }}</option>
+                <option value="2">{{ get_variable("label_2", default_value="Poor") }}</option>
+                <option value="1">{{ get_variable("label_1", default_value="Bad") }}</option>
+            </select>
 
-      </label>
-      <select id="score@{{syssample.ID}}" name="{{ name_field }}" class="form-control" required>
-      <option value="" selected disabled hidden>Choose here</option>
-       <option value="5">Excellent</option>
-       <option value="4">Good</option>
-       <option value="3">Fair</option>
-       <option value="2"> Poor </option>
-       <option value="1"> Bad </option>
-      </select>
+        </div>
+        {% endfor %}
 
-    </div>
-    {% endfor %}
+    </fieldset>
 
-  </fieldset>
-
-  <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 
 </form>
 {% endblock %}

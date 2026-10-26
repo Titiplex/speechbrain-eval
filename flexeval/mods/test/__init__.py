@@ -8,6 +8,7 @@ from flexeval.utils import redirect
 from flexeval.database import db,commit_all
 
 from .src import TestManager
+from .src.Protocol import presentation, record
 
 class TestsAlternateError(Exception):
     pass
@@ -37,6 +38,8 @@ with StageModule(__name__) as sm:
             test.set_timeout_for_transaction(int(transaction_timeout_seconds))
 
         user = sm.authProvider.user
+        if test.schedule is not None and max_steps != len(test.schedule):
+            raise MalformationError("nb_steps must equal the number of scheduled trials")
 
         steps = test.nb_steps_complete_by(user)
 
@@ -51,17 +54,7 @@ with StageModule(__name__) as sm:
             syssamples_for_this_step = test.get_step(user,is_intro_step=intro_step)
 
             def get_syssamples(*system_names):
-                systems = []
-                if(len(system_names) == 0):
-                    for syssample in syssamples_for_this_step.values():
-                        systems.append(syssample)
-                else:
-                    for name_system in system_names:
-                        systems.append(syssamples_for_this_step[name_system])
-
-                random.shuffle(systems)
-
-                return systems
+                return presentation(test, user, syssamples_for_this_step, system_names)
 
             def save_field_name(name,syssamples=get_syssamples()):
                 name = name.replace(":","_")
@@ -82,7 +75,12 @@ with StageModule(__name__) as sm:
                 max_steps = max_steps - nb_step_intro
                 steps = steps + 1 - nb_step_intro
 
-            return sm.render_template(template=stage.template,max_steps=max_steps,step=steps,intro_step=intro_step,syssamples=get_syssamples,field_name=save_field_name)
+            meta = test.get_in_transaction(user, "protocol") or {}
+            missing = [getattr(sample._systemsample, sample._system.cols_name[0]) for sample in syssamples_for_this_step.values()
+                       if test.schedule is not None and sample.get(num=0)[1] != "audio"]
+            return sm.render_template(template=stage.template,max_steps=max_steps,step=steps,intro_step=intro_step,syssamples=get_syssamples,field_name=save_field_name,
+                                      missing_audio=missing, training_note=meta.get("explanation", ""),
+                                      abx_target=meta.get("target"), allow_tie=bool(stage.variables.get("allow_tie")) and meta.get("role") != "control")
         else:
             return redirect(stage.local_url_next)
 
@@ -107,6 +105,8 @@ with StageModule(__name__) as sm:
             try:
                 for field_type, field_list in [("string",request.form), ("file",request.files)]:
                     for field_key in field_list.keys():
+                        if field_key.startswith("protocol_"):
+                            continue
                         field_value = field_list[field_key]
 
                         if(field_key[:5] == "save:"):
@@ -154,8 +154,12 @@ with StageModule(__name__) as sm:
                 test.delete_transaction(user)
                 return redirect(sm.url_for(sm.get_endpoint_for_local_rule("/")))
 
+            record(test, user, resp, intro_step)
             commit_all()
             test.delete_transaction(user)
+
+            if intro_step and test.schedule is not None:
+                return redirect(sm.url_for(sm.get_endpoint_for_local_rule("/feedback")))
 
             if skip_after_n_step is not None:
                 if (steps+1) % skip_after_n_step == 0:
@@ -164,6 +168,18 @@ with StageModule(__name__) as sm:
             return redirect(sm.url_for(sm.get_endpoint_for_local_rule("/")))
         else:
             abort(408)
+
+    @sm.route("/feedback", methods=['GET'])
+    @sm.connection_required
+    def feedback():
+        test = TestManager().get(sm.current_stage.name)
+        user = sm.authProvider.user
+        index = test.nb_steps_complete_by(user)-1
+        if test.schedule is None or index < 0 or not getattr(user, test.testSampleModel.__name__)[index].intro:
+            return redirect(sm.current_stage.local_url)
+        return sm.render_template(template="feedback.tpl",
+            explanation=test.schedule[index].get("explanation", "Évaluez le raccord, pas la familiarité du nom."),
+            continue_url=sm.current_stage.local_url)
 
 with StageModule(__name__,subname="alternate") as sm_alternate:
 

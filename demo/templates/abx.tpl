@@ -36,6 +36,7 @@
 </div>
 {% else %}
 
+{% if get_variable('abx_target') is none %}
 {% set trial_ids = samples | map(attribute='ID') | sort | list %}
 {% set trial = session.get('flexeval_abx_trial') %}
 {% if trial is none or trial.get('ids') != trial_ids %}
@@ -51,6 +52,16 @@
 
 {% set sample_a = samples[0] if samples[0].ID == trial['a'] else samples[1] %}
 {% set sample_b = samples[1] if samples[0].ID == trial['a'] else samples[0] %}
+{% else %}
+{% set sample_a = samples[0] %}
+{% set sample_b = samples[1] %}
+{% set target_name = get_variable('abx_target') %}
+{% if target_name is none %}
+{% set target = samples|random %}
+{% set target_name = target.system_name %}
+{% endif %}
+{% set trial = {'x': sample_a.ID if target_name == sample_a.system_name else sample_b.ID} %}
+{% endif %}
 {% set content_a, mimetype_a = sample_a.get(num=0) %}
 {% set content_b, mimetype_b = sample_b.get(num=0) %}
 {% set content_x = content_a if trial['x'] == sample_a.ID else content_b %}

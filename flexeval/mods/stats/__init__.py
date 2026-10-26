@@ -5,37 +5,32 @@ from flexeval.core import AdminModule
 from flexeval.database import db
 
 from .src.statistics import numeric_summary, control_summary
+from .src.analysis import numeric, categorical, quality, paired
 
 
 def summarize_source(source):
-    # Native test tables/columns may not exist before the first response.
-    empty = {"participants": {}} if source.get("type") == "control" else numeric_summary([])
-
+    kind = source.get("type", "numeric")
+    empty = {"participants": {}} if kind in ("control", "quality", "profile") else numeric([] , "") if kind == "numeric" else categorical([], kind)
     if source["table"] not in inspect(db.engine).get_table_names():
-        return dict(empty, message="No answer registered for this test.")
-
+        return dict(empty, message="Aucune réponse enregistrée pour ce test.")
     table = Table(source["table"], MetaData(), autoload_with=db.engine)
-    required = list(source["expected"]) if source.get("type") == "control" else [source["column"]]
-
-    if source.get("type") == "control":
-        required.append("user_pseudo")
-
-    missing = [name for name in required if name not in table.c]
-
-    if missing:
-        return dict(empty, message="Missing columns : " + ", ".join(missing))
-
     query = db.session.query(table)
-
-    if source.get("exclude_intro", True):
+    if source.get("exclude_intro", True) and "intro" in table.c:
         query = query.filter(table.c["intro"].is_(False))
-
     rows = [dict(zip(table.c.keys(), row)) for row in query.all()]
-
-    if source.get("type") == "control":
+    if source.get("role"):
+        rows = [row for row in rows if row.get("protocol_role") == source["role"]]
+    if kind == "profile":
+        return {"participants": {row["user_pseudo"]: row for row in rows}}
+    if kind == "control":
         return control_summary(rows, source["expected"])
-
-    return numeric_summary([row[source["column"]] for row in rows])
+    if kind == "quality":
+        return quality(rows, source["protocol"])
+    if kind in ("ab", "abx"):
+        return categorical(rows, kind)
+    result = numeric(rows, source["column"])
+    result["paired"] = paired(rows, source["compare"]) if source.get("compare") else None
+    return result
 
 
 

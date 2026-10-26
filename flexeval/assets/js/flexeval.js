@@ -33,7 +33,7 @@ $(document).ready(function(){
         $(this).attr("disabled",true);
       });
 
-      $(this).on("ended", function(e) {
+      $(this).one("ended", function(e) {
           locked = locked - 1;
 
           if(locked == 0)

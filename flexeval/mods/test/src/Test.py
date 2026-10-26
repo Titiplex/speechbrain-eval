@@ -16,6 +16,7 @@ from flexeval.database import Column,ForeignKey,ModelFactory,db
 from flexeval.mods.test.model import TestSample, SystemSample
 
 from .System import SystemManager
+from .Protocol import scheduled
 
 class SystemSampleTemplate():
 
@@ -87,6 +88,8 @@ class Test():
 
         # Init l'objet Test
         self.name = name
+        self.schedule = config.get("schedule")
+        self.protocol_kind = config.get("protocol_kind", "ab")
         self.systems = {}
         self.transactions = {}
         self.time_out_seconds = 3600
@@ -115,6 +118,16 @@ class Test():
                 aligned_with = config["systems"][0]["name"]
 
             self.systems[system["name"]] = (SystemManager().get(system["data"].replace(".csv","")),aligned_with)
+
+        if self.schedule is not None:
+            if not system_all_aligned or not self.schedule:
+                raise MalformationError("A schedule requires aligned systems and at least one trial")
+            for index, trial in enumerate(self.schedule):
+                if not isinstance(trial.get("line"), int) or trial["line"] < 0 or any(trial["line"] >= len(system.system_samples) for system, _ in self.systems.values()):
+                    raise MalformationError("Scheduled line outside the system CSV")
+                original = trial.get("repeat_of")
+                if original is not None and (not isinstance(original, int) or original < 0 or index-original < 3 or self.schedule[original]["line"] != trial["line"] or trial.get("role") != "repeat"):
+                    raise MalformationError("A repeat must reference the same item at least three steps earlier")
 
         # Init ou Regen la repr en bdd & les relations
 
@@ -275,6 +288,8 @@ class Test():
 
             for system_name in self.systems.keys():
                 self.get_syssample_for_step(choice_for_systems,system_name,user)
+
+            scheduled(self, user, choice_for_systems)
 
             for system_name in choice_for_systems.keys():
                 (system,aligned_with) = self.systems[system_name]

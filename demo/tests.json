@@ -102,5 +102,348 @@
         "data": "controle_mos_sys2.csv"
       }
     ]
+  },
+  "formation_ab": {
+    "system_all_aligned": true,
+    "protocol_kind": "ab",
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "formation_sys1.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "formation_sys2.csv"
+      }
+    ],
+    "schedule": [
+      {
+        "line": 0,
+        "role": "training",
+        "explanation": "Un raccord fluide préserve le rythme et le timbre de la phrase."
+      },
+      {
+        "line": 1,
+        "role": "training",
+        "explanation": "Écoutez la rupture de rythme autour du nom."
+      },
+      {
+        "line": 2,
+        "role": "training",
+        "explanation": "Écoutez la rupture de timbre."
+      },
+      {
+        "line": 3,
+        "role": "training",
+        "explanation": "Un raccord peut être audible sans rendre le nom incompréhensible."
+      },
+      {
+        "line": 4,
+        "role": "training",
+        "explanation": "Un pseudonyme inhabituel peut être intégré naturellement."
+      }
+    ]
+  },
+  "evaluation_ab": {
+    "system_all_aligned": true,
+    "protocol_kind": "ab",
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "evaluation_sys1.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "evaluation_sys2.csv"
+      }
+    ],
+    "schedule": [
+      {
+        "line": 0
+      },
+      {
+        "line": 5,
+        "role": "control",
+        "control": "attention",
+        "expected": "sys1"
+      },
+      {
+        "line": 1
+      },
+      {
+        "line": 2
+      },
+      {
+        "line": 6,
+        "role": "control",
+        "control": "gold",
+        "expected": "sys1"
+      },
+      {
+        "line": 3
+      },
+      {
+        "line": 0,
+        "role": "repeat",
+        "repeat_of": 0
+      },
+      {
+        "line": 4
+      },
+      {
+        "line": 1,
+        "role": "repeat",
+        "repeat_of": 2
+      }
+    ]
+  },
+  "formation_mos": {
+    "system_all_aligned": true,
+    "protocol_kind": "mos",
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "formation_sys1.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "formation_sys2.csv"
+      }
+    ],
+    "schedule": [
+      {
+        "line": 0,
+        "role": "training",
+        "explanation": "Un raccord fluide préserve le rythme et le timbre de la phrase."
+      },
+      {
+        "line": 1,
+        "role": "training",
+        "explanation": "Écoutez la rupture de rythme autour du nom."
+      },
+      {
+        "line": 2,
+        "role": "training",
+        "explanation": "Écoutez la rupture de timbre."
+      },
+      {
+        "line": 3,
+        "role": "training",
+        "explanation": "Un raccord peut être audible sans rendre le nom incompréhensible."
+      },
+      {
+        "line": 4,
+        "role": "training",
+        "explanation": "Un pseudonyme inhabituel peut être intégré naturellement."
+      }
+    ]
+  },
+  "evaluation_mos": {
+    "system_all_aligned": true,
+    "protocol_kind": "mos",
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "mos_sys1.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "mos_sys2.csv"
+      }
+    ],
+    "schedule": [
+      {
+        "line": 0
+      },
+      {
+        "line": 5,
+        "role": "control",
+        "control": "attention",
+        "expected": {
+          "MOS_score_sys1": "2",
+          "MOS_score_sys2": "2"
+        }
+      },
+      {
+        "line": 1
+      },
+      {
+        "line": 2
+      },
+      {
+        "line": 6,
+        "role": "control",
+        "control": "gold",
+        "expected": {
+          "ordering": "sys1>sys2"
+        }
+      },
+      {
+        "line": 3
+      },
+      {
+        "line": 0,
+        "role": "repeat",
+        "repeat_of": 0
+      },
+      {
+        "line": 4
+      },
+      {
+        "line": 1,
+        "role": "repeat",
+        "repeat_of": 2
+      }
+    ]
+  },
+  "formation_abx": {
+    "system_all_aligned": true,
+    "protocol_kind": "abx",
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "formation_sys1.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "formation_sys2.csv"
+      }
+    ],
+    "schedule": [
+      {
+        "line": 0,
+        "role": "training",
+        "explanation": "Un raccord fluide préserve le rythme et le timbre de la phrase."
+      },
+      {
+        "line": 1,
+        "role": "training",
+        "explanation": "Écoutez la rupture de rythme autour du nom."
+      },
+      {
+        "line": 2,
+        "role": "training",
+        "explanation": "Écoutez la rupture de timbre."
+      },
+      {
+        "line": 3,
+        "role": "training",
+        "explanation": "Un raccord peut être audible sans rendre le nom incompréhensible."
+      },
+      {
+        "line": 4,
+        "role": "training",
+        "explanation": "Un pseudonyme inhabituel peut être intégré naturellement."
+      }
+    ]
+  },
+  "evaluation_abx": {
+    "system_all_aligned": true,
+    "protocol_kind": "abx",
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "abx_sys1.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "abx_sys2.csv"
+      }
+    ],
+    "schedule": [
+      {
+        "line": 0
+      },
+      {
+        "line": 5,
+        "role": "control",
+        "control": "easy",
+        "expected": "target"
+      },
+      {
+        "line": 1
+      },
+      {
+        "line": 2
+      },
+      {
+        "line": 6,
+        "role": "control",
+        "control": "easy",
+        "expected": "target"
+      },
+      {
+        "line": 3
+      },
+      {
+        "line": 0,
+        "role": "repeat",
+        "repeat_of": 0
+      },
+      {
+        "line": 4
+      },
+      {
+        "line": 1,
+        "role": "repeat",
+        "repeat_of": 2
+      }
+    ]
+  },
+  "headphones": {
+    "system_all_aligned": true,
+    "protocol_kind": "ab",
+    "systems": [
+      {
+        "name": "sys1",
+        "data": "casque_sys1.csv"
+      },
+      {
+        "name": "sys2",
+        "data": "casque_sys2.csv"
+      },
+      {
+        "name": "sys3",
+        "data": "casque_sys3.csv"
+      }
+    ],
+    "schedule": [
+      {
+        "line": 0,
+        "role": "control",
+        "control": "headphone",
+        "expected": "sys1"
+      },
+      {
+        "line": 1,
+        "role": "control",
+        "control": "headphone",
+        "expected": "sys1"
+      },
+      {
+        "line": 2,
+        "role": "control",
+        "control": "headphone",
+        "expected": "sys1"
+      },
+      {
+        "line": 3,
+        "role": "control",
+        "control": "headphone",
+        "expected": "sys1"
+      },
+      {
+        "line": 4,
+        "role": "control",
+        "control": "headphone",
+        "expected": "sys1"
+      },
+      {
+        "line": 5,
+        "role": "control",
+        "control": "headphone",
+        "expected": "sys1"
+      }
+    ]
   }
 }

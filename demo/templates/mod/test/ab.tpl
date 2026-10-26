@@ -1,7 +1,2 @@
-{% extends get_template('ab.tpl', 'mode/test') %}
-
-{% block head %}
-{{ super() }}
-
-<link rel="stylesheet" href="../../../assets/css/style.css">
-{% endblock %}
+{% extends get_template('ab.tpl','mod/test') %}
+{# Overrides actifs : templates/flexeval/mods/test/, ou templates *_experience.tpl. #}
