@@ -22,7 +22,11 @@ class ProtocolTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.tmp=tempfile.TemporaryDirectory();cls.instance=Path(cls.tmp.name)/'demo'
-        shutil.copytree(ROOT/'demo',cls.instance)
+        shutil.copytree(
+            ROOT / "demo",
+            cls.instance,
+            ignore=shutil.ignore_patterns(".tmp", "flexeval.db*"),
+        )
         for file in (cls.instance/'systems').glob('*.csv'):
             with file.open(encoding='utf-8') as f:
                 for row in csv.DictReader(f):
@@ -34,9 +38,16 @@ class ProtocolTests(unittest.TestCase):
         cls.app=create_app(str(cls.instance),'http://localhost');cls.app.testing=True
     @classmethod
     def tearDownClass(cls):cls.tmp.cleanup()
-    def page(self,response,expected):
-        self.assertEqual(response.status_code,200)
-        body=response.data.decode();self.assertNotIn('HTTP status code:',body);self.assertIn(expected,body)
+    def page(self, response, expected):
+        self.assertEqual(
+            response.status_code,
+            200,
+            f"Réponse inattendue : HTTP {response.status_code}, "
+            f"Location={response.headers.get('Location')!r}",
+        )
+        body = response.data.decode("utf-8")
+        self.assertNotIn("HTTP status code:", body)
+        self.assertIn(expected, body)
         return body
     def test_statistics(self):
         from flexeval.mods.stats.src.analysis import numeric,paired,categorical,quality
@@ -58,13 +69,18 @@ class ProtocolTests(unittest.TestCase):
         c.post('/admin/admin_panel/login',data={'admin_password':config['admin']['entrypoint']['password']})
         for report in config['admin']['mods'][1]['reports']:
             self.page(c.get('/admin/stats/?report='+report),'/admin/stats/') if report!='controles' else self.page(c.get('/admin/stats/?report='+report),'Contrôles')
-        for stage,data in [('conditions_ecoute',dict(equipment='headphones',environment='quiet',volume_ready='yes')),
+        for stage,data in [('listening_conditions',dict(equipment='headphones',environment='quiet',volume_ready='yes')),
                            ('comprehension',dict(criterion='raccord',attempts='2',first_choice='meaning'))]:
             self.page(c.get('/stage/form/'+stage+'/'),'<form')
             self.assertEqual(c.post('/stage/form/'+stage+'/save',data=data).status_code,302)
         for stage in ['formation_ab','evaluation_ab','formation_mos','evaluation_mos','formation_abx','evaluation_abx']:
             url='/stage/test/'+stage+'/'
             expected=5 if stage.startswith('formation') else 9
+            self.assertEqual(
+                config["stages"][stage]["nb_steps"],
+                expected,
+                f"{stage} : ce test attend la campagne complète ({expected} essais)",
+            )
             for index in range(expected):
                 body=self.page(c.get(url),'<form');parser=Inputs();parser.feed(body)
                 if stage=='evaluation_ab':self.assertEqual('choice-tie' in body,index not in [1,4])
