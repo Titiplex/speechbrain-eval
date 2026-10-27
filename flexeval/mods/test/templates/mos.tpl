@@ -32,8 +32,7 @@
 
     <fieldset class="form-group">
         <legend class="col-form-label">
-            <strong>Question:</strong> {{ get_variable("question", default_value="How do you judge the quality of the following sample?") }
-            }
+            <strong>Question:</strong> {{ get_variable("question", default_value="How do you judge the quality of the following sample?") }}
         </legend>
 
 

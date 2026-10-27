@@ -8,6 +8,7 @@
 <p>
     Évaluez la continuité du rythme, du timbre et du raccord, pas la familiarité du nom. Suivez toute consigne
     parlée explicite de vérification.
-</p>{{ super() }}
+</p>
+{{ super() }}
 {% endif %}
 {% endblock %}

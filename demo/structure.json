@@ -140,20 +140,6 @@
               }
             }
           },
-          "historique": {
-            "title": "Ancien MOS (historique)",
-            "template": "results.tpl",
-            "sources": {
-              "sys1": {
-                "table": "TestSample_test_mos",
-                "column": "MOS_score_sys1"
-              },
-              "sys2": {
-                "table": "TestSample_test_mos",
-                "column": "MOS_score_sys2"
-              }
-            }
-          },
           "conditions": {
             "title": "Conditions et compréhension",
             "template": "profile.tpl",
@@ -270,7 +256,7 @@
     "listening_conditions": {
       "type": "form",
       "template": "listening_conditions.tpl",
-      "next": "comprehension"
+      "next": "headphones"
     },
     "comprehension": {
       "type": "form",

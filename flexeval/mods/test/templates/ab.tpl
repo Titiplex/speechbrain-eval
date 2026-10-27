@@ -32,21 +32,16 @@
 
     <fieldset class="form-group">
         <legend class="col-form-label">
-            <strong>Question:</strong> {{ get_variable("question", default_value="Between the following samples, which sample do you prefer in terms of quality?") }
-            }
+            <strong>Question:</strong> {{ get_variable("question", default_value="Between the following samples, which sample do you prefer in terms of quality?") }}
         </legend>
 
 
         <div class="form-group">
 
-            {%
-            set field_name = get_variable("field_name",name="ChoiceBetween")
-            %}
+            {%set field_name = get_variable("field_name",name="ChoiceBetween")%}
 
             {% for syssample in get_variable("syssamples") %}
-            {%
-            set content,mimetype = syssample.get(num=0)
-            %}
+            {%set content,mimetype = syssample.get(num=0)%}
 
             <div class="form-check" style="margin-bottom:10px;">
                 <input class="form-check-input" type="radio" name="{{field_name}}" id="ID@{{syssample.ID}}"
@@ -74,14 +69,15 @@
 
             {% endfor %}
             {% if get_variable('allow_tie', default_value=False) %}
-            <div class="form-check"><input class="form-check-input" type="radio" name="{{ field_name }}" id="choice-tie"
-                                           value="tie" required><label class="form-check-label" for="choice-tie">Sans
-                    préférence</label></div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="{{ field_name }}" id="choice-tie"
+                       value="tie" required>
+                <label class="form-check-label" for="choice-tie">Sans préférence</label>
+            </div>
             {% endif %}
         </div>
 
     </fieldset>
-
 
     <button type="submit" class="btn btn-primary">Submit</button>
 
