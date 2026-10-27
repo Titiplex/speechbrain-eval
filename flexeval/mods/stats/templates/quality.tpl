@@ -28,9 +28,12 @@
             <td>{{ p.mos_repeat_mae }} ({{ p.mos_repeat_n }} notes)</td>
             <td>{{ p.repeat_agreement }} ({{ p.repeat_n }} paires)</td>
             <td>{{ p.first_rate }} ({{ p.position_n }} choix)</td>
-        </tr>{% endfor %}</tbody>
+        </tr>
+        {% endfor %}
+        </tbody>
     </table>
-</div>{% endfor %}
+</div>
+{% endfor %}
 <p>Accord et positions sont des proportions 0–1. Les répétitions comparent les systèmes/fichiers, pas les lettres A/B.
     Les anciennes données sans métadonnées ne permettent pas de reconstruire leur ordre.</p>
 {% endblock %}

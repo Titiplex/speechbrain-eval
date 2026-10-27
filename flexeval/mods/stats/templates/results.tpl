@@ -37,7 +37,8 @@
     </table>
     <p>{{ s["items"] }} extraits distincts.</p>
     <details>
-        <summary>Par extrait</summary>{% for item,v in s.by_item.items() %}
+        <summary>Par extrait</summary>
+        {% for item,v in s.by_item.items() %}
         <p>{{ item }} : {{ v.n }} notes, moyenne {{ v.mean }}</p>
         {% endfor %}
     </details>

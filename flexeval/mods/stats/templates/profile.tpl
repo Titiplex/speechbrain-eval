@@ -14,10 +14,14 @@
         <th>Informations</th>
     </tr>
     </thead>
-    <tbody>{% for user,p in s.participants.items() %}
+    <tbody>
+    {% for user,p in s.participants.items() %}
     <tr>
         <td>{{ user }}</td>
         <td>{{ p }}</td>
-    </tr>{% endfor %}</tbody>
-</table>{% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endfor %}
 {% endblock %}
